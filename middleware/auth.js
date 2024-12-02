@@ -4,13 +4,13 @@ const catchAsyncErrors = require("./catchAsyncErrors");
 const User = require("../models/user");
 
 exports.isAuthenticated = catchAsyncErrors(async (req, res, next) => {
-    const { token } = req.cookies;
+    const authHeader = req.header('Authorization');
+    const token = authHeader && authHeader.split(' ')[1]; // Extract token after 'Bearer '
 
     if (!token) {
         return next(new ErrorHandler('Please log in to access this resource', 401));
     }
 
-    // Verify the token
     let decoded;
     try {
         decoded = jwt.verify(token, process.env.JWT_SECRETKEY);
@@ -18,15 +18,15 @@ exports.isAuthenticated = catchAsyncErrors(async (req, res, next) => {
         return next(new ErrorHandler('Invalid or expired token', 403));
     }
 
-    // Find the user
-    const user = await User.findById(decoded.id);
+    const user = await User.findById(decoded.id).select("-password");
     if (!user) {
         return next(new ErrorHandler('User not found', 404));
     }
 
-    req.user = user; // Attach the user to the request
+    req.user = user;
     next();
 });
+
 
 exports.isAdmin = catchAsyncErrors(async (req, res, next) => {
     if (req.user.role !== "admin") {
