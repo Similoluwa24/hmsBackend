@@ -8,11 +8,6 @@ const Prescription = require('../models/prescription');
 exports.createInvoice = catchAsyncErrors( async (req, res) => {
   
     const { presId, services,patientAddress } = req.body;
-    // const patientExist = await User.findById(patientId)
-    // if (!patientExist) {
-    // //    return next(new ErrorHandler('Patient not Found',404))
-    //     res.status(404).json('Patient not Found')
-    // }
     const prescription = await Prescription.findById(presId);
 
     if (!prescription || !prescription.requiresInvoice) {

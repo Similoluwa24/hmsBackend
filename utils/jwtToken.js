@@ -8,7 +8,7 @@ const sendToken = (user,statusCode,res)=>{
         ),
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production', // Only secure in production
-        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // Required for cross-origin cookies
+        sameSite: none
     }
     res.status(statusCode)
         .cookie("token",token,options )
