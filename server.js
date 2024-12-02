@@ -12,41 +12,57 @@ const invoiceRoutes = require('./routers/invoiceRoutes');
 const paymentRouter = require('./routers/paymentRouter');
 const dotenv = require('dotenv');
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
 const ErrorMiddleware = require('./middleware/error');
-const cookieParser = require('cookie-parser')
-const app = express()
-app.use(express.json())
-app.use(cookieParser())
 
-dotenv.config()
-connectDB()
+dotenv.config(); // Load environment variables
 
-// Middleware to parse JSON and URL-encoded data with a limit
-app.use(express.json({ limit: '50mb' }));
+const app = express();
+
+// Connect to database
+connectDB();
+
+// Middleware to parse JSON and URL-encoded data
+app.use(express.json({ limit: '50mb' })); // Include a size limit
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+app.use(cookieParser());
 
-app.use(cors({
-    origin:["http://localhost:5173","https://ojhospital.vercel.app"],
-    allowedHeaders : ["Content-Type" ,"Authorization","user",, 'Cache-Control'],
-    methods : ["GET", "POST","PUT","PATCH", "DELETE"],
-    credentials : true
-}))
+// CORS configuration
+app.use(
+  cors({
+    origin: ["http://localhost:5173", "https://ojhospital.vercel.app"], // Frontend URLs
+    allowedHeaders: ["Content-Type", "Authorization", "Cache-Control"], // Ensure correct headers
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"], // Allowed methods
+    credentials: true, // Allow credentials (cookies)
+  })
+);
 
-app.use('/user', authRouters)
-app.use('/contact', contactRoutes)
-app.use('/appointment', appointmentRouters)
-app.use('/pharmacy', pharmacyRoutes)
-app.use('/department',departmentRouter)
-app.use('/inventory',inventoryRoutes)
-app.use('/prescription',prescriptionRoutes)
-app.use('/diagnosis',diagnosisRoutes)
-app.use('/invoice',invoiceRoutes)
-app.use('/payment',paymentRouter)
+// Routes
+app.use('/user', authRouters);
+app.use('/contact', contactRoutes);
+app.use('/appointment', appointmentRouters);
+app.use('/pharmacy', pharmacyRoutes);
+app.use('/department', departmentRouter);
+app.use('/inventory', inventoryRoutes);
+app.use('/prescription', prescriptionRoutes);
+app.use('/diagnosis', diagnosisRoutes);
+app.use('/invoice', invoiceRoutes);
+app.use('/payment', paymentRouter);
 
+// Debugging middleware to log incoming requests
+app.use((req, res, next) => {
+  console.log(`Request: ${req.method} ${req.originalUrl}`);
+  console.log('Cookies:', req.cookies);
+  next();
+});
 
-//middleware
-app.use(ErrorMiddleware)
+// Error handling middleware
+app.use(ErrorMiddleware);
 
-const port = process.env.PORT || 3000
-app.listen(port, ()=>{console.log(`connected to port ${port}`);
-})
+// Start the server
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
+});
+
+module.exports = app;
