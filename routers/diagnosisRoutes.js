@@ -8,6 +8,7 @@ route.delete('/delete/:id',isAuthenticated, diagnosisController.deleteDiagnosis)
 route.get('/admin',isAuthenticated, diagnosisController.findDiagnosis)
 route.get('/user',isAuthenticated, diagnosisController.findByUserId)
 route.get('/doctor',isAuthenticated, diagnosisController.findByDoctorId)
+route.get('/:id', isAuthenticated, diagnosisController.findDiagnosisById)
 
 
 module.exports = route

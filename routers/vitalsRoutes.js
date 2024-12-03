@@ -4,5 +4,7 @@ const vitalController = require('../controllers/vitalsController')
 const {isAuthenticated} = require('../middleware/auth')
 
 router.post('/add', isAuthenticated, vitalController.addVitals)
+router.get('/latest',isAuthenticated, vitalController.getLatest)
+router.get('/:id',isAuthenticated,vitalController.getById)
 
 module.exports = router

@@ -23,4 +23,19 @@ exports.addVitals = catchAsyncErrors(async (req, res) => {
       vitals,
     });
   });
+
+  exports.getById = catchAsyncErrors(async (req,res,next) => {
+    const id = req.params.id
+
+    const vitals = await Vitals.findById(id)
+
+    res.status(200).json(vitals)
+  })
+
+  exports.getLatest = catchAsyncErrors(async (req,res,next) => {
+    const id = req.user.id
+    const vitals = await Vitals.findOne({user:id})
+
+    res.status(200).json(vitals)
+  })
   
