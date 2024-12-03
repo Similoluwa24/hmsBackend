@@ -58,7 +58,7 @@ exports.findByDoctorId = catchAsyncErrors(async (req, res, next) => {
       return next(new ErrorHandler('Doctor ID is required and cannot be undefined', 400));
     }
   
-    const diagnosis = await Diagnosis.findOne({ doctor: doctorId }).populate('doctor').populate('userId');
+    const diagnosis = await Diagnosis.find({ doctor: doctorId }).populate('doctor').populate('userId');
   
     if (!diagnosis) {
       return next(new ErrorHandler('Diagnosis not found', 404));

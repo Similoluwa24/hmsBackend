@@ -40,7 +40,7 @@ exports.initiatePayment =  async (req, res) => {
       tx_ref: transactionReference,
       amount: invoice.totalCost,
       currency: 'NGN', // Adjust as necessary
-      redirect_url: `${req.protocol}://localhost:5173/user/transactions/${payment._id}`,
+      redirect_url: `${req.protocol}://ojhospital.vercel.app/user/transactions/${payment._id}`,
     //   http://localhost:5173/thankyou
       customer: {
         email: invoice.patientId.email,
@@ -144,10 +144,6 @@ exports.findbyUserId = catchAsyncErrors(async (req,res,next) => {
     res.status(200).json(reciepts)
 })
 
-// exports.adminFind = catchAsyncErrors(async (req,res,next) => {
-//     const reciepts = await Payment.findById(req.params.id).populate('invoiceId').populate('userId')
-//     res.status(200).json(reciepts)
-// })
 
 exports.forAdmin = catchAsyncErrors(async (req, res, next) => {
   const isValidId = mongoose.Types.ObjectId.isValid(req.params.id);

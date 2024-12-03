@@ -10,6 +10,7 @@ const prescriptionRoutes = require('./routers/prescriptionRoutes');
 const diagnosisRoutes = require('./routers/diagnosisRoutes');
 const invoiceRoutes = require('./routers/invoiceRoutes');
 const paymentRouter = require('./routers/paymentRouter');
+const vitalsRoutes = require('./routers/vitalsRoutes');
 const dotenv = require('dotenv');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
@@ -48,6 +49,7 @@ app.use('/prescription', prescriptionRoutes);
 app.use('/diagnosis', diagnosisRoutes);
 app.use('/invoice', invoiceRoutes);
 app.use('/payment', paymentRouter);
+app.use('/vitals', vitalsRoutes);
 
 // Debugging middleware to log incoming requests
 app.use((req, res, next) => {

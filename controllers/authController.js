@@ -252,7 +252,7 @@ exports.forgotPassword = catchAsyncErrors(async (req, res, next) => {
     const resetToken = user.getResetToken()
     await user.save({validateBeforeSave:false})
     //create reset url
-    const resetUrl = `${req.protocol}://localhost:5173/auth/resetPwd/${resetToken}`
+    const resetUrl = `${req.protocol}://ojhospital.vercel.app/auth/resetPwd/${resetToken}`
 
     //message to be sent to client with the token to reset password
     const html = `
@@ -352,33 +352,6 @@ exports.updatePassword = catchAsyncErrors(async (req, res, next) => {
     sendToken(user, 200, res)
 })
 
-
-// exports.updateProfile = catchAsyncErrors(async (req, res, next) => {
-//         const updates = { ...req.body }; // Copy all non-file fields
-
-//         // Check if a file (image) is included in the request
-//         if (req.file) {
-//             // Upload the file to Cloudinary
-//             const result = await cloudinary.uploader.upload(
-//                 `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`
-//             );
-
-//             // Add the uploaded image URL to the updates
-//             updates.photo = [{ img: result.secure_url }];
-//         }
-
-//         // Find and update the user
-//         const user = await User.findByIdAndUpdate(req.user.id, updates, {
-//             runValidators: true,
-//             new: true, // Return the updated user document
-//         });
-
-//         res.status(200).json({
-//             status: 'success',
-//             user,
-//         });
-   
-// });
 
 
 exports.updateProfile = catchAsyncErrors(async (req, res, next) => {
