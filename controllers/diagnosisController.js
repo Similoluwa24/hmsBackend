@@ -53,7 +53,7 @@ exports.findDiagnosis = catchAsyncErrors(async (req,res,next) => {
 
 
 exports.findByDoctorId = catchAsyncErrors(async (req, res, next) => {
-    const doctorId = req.user.id; // Use req.query for GET requests
+    const doctorId = req.user.id; 
     if (!doctorId) {
       return next(new ErrorHandler('Doctor ID is required and cannot be undefined', 400));
     }
@@ -80,4 +80,15 @@ exports.findByUserId = catchAsyncErrors(async (req,res,next) => {
     res.status(200).json({
         diagnosis: Array.isArray(diagnosis) ? diagnosis : [diagnosis]
     })
+})
+
+exports.findDiagnosisById = catchAsyncErrors(async(req, res, next)=>{
+    const id = req.params.id
+
+    const diagnosis = await Diagnosis.findById(id)
+    
+    if (!diagnosis) {
+        res.status(404).json('Diagnosis not Found')
+    }
+    res.status(200).json(diagnosis)
 })
