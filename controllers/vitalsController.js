@@ -27,23 +27,28 @@ exports.addVitals = catchAsyncErrors(async (req, res) => {
   exports.getById = catchAsyncErrors(async (req,res,next) => {
     const id = req.params.id
 
-    const vitals = await Vitals.findById(id)
+    const vitals = await Vitals.findById(id).populate('user')
 
     res.status(200).json(vitals)
   })
 
   exports.getLatest = catchAsyncErrors(async (req,res,next) => {
     const id = req.user.id
-    const vitals = await Vitals.findOne({user:id})
+    const vitals = await Vitals.findOne({user:id}).sort({createdAt: -1}).populate('user')
 
     res.status(200).json(vitals)
   })
 
-  exports.getbyUserId = catchAsyncErrors(async (req,res,next) => {
-    const user = req.user.id
-
-    const vitals = await Vitals.find({user:user})
-
-    res.status(200).json(vitals)
-  })
+  exports.getByUserId = catchAsyncErrors(async (req, res, next) => {
+    const userId = req.user.id; // Authenticated user's ID
+  
+    // Fetch all vitals for the user
+    const vitals = await Vitals.find({ user: userId }).populate('user')
+  
+    // Return a structured response
+    res.status(200).json({
+      status: "success",
+      data: vitals,
+    });
+  });
   
