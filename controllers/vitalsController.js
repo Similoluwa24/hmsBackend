@@ -38,4 +38,12 @@ exports.addVitals = catchAsyncErrors(async (req, res) => {
 
     res.status(200).json(vitals)
   })
+
+  exports.getbyUserId = catchAsyncErrors(async (req,res,next) => {
+    const user = req.user.id
+
+    const vitals = await Vitals.find({user:user})
+
+    res.status(200).json(vitals)
+  })
   
