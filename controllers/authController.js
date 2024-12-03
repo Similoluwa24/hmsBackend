@@ -11,86 +11,199 @@ const  cloudinary  = require('../utils/cloudinary');
 dotenv.config()
 
 
+// exports.signup = catchAsyncErrors(async (req, res, next) => {
+//     const {
+//       first_name, last_name, email, gender, dob, password, confirmPassword, role,
+//       phone, departments, address, school, NHIS, genotype, btype
+//     } = req.body;
+  
+//     if (password !== confirmPassword) {
+//       return res.status(400).json({ message: 'Passwords do not match' });
+//     }
+  
+//     // Variable to store photo URL
+//     let photoUrl = null;
+  
+//     if (req.file) {
+//       try {
+//         // If file exists, upload to Cloudinary
+//         const photoResult = await cloudinary.uploader.upload(
+//           `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`
+//         );
+//         photoUrl = photoResult.secure_url;
+//       } catch (uploadError) {
+//         console.error('Image upload error', uploadError);
+//         return res.status(500).json({ message: 'Image upload failed', error: uploadError.message });
+//       }
+//     } else {
+//       // Assign a default photo URL if needed (or leave it null)
+//       photoUrl = ""; // Replace with your default photo URL
+//     }
+  
+//     const hashedPassword = await bcrypt.hash(password, 12);
+//     const verificationToken = Math.floor(100000 + Math.random() * 900000).toString();
+  
+//     const newUser = await User.create({
+//       first_name, last_name, email, gender, password: hashedPassword, dob, role, phone,
+//       departments, address, school, NHIS, genotype, btype,
+//       photo: photoUrl,
+//       verificationToken,
+//       verificationExpire: Date.now() + 24 * 60 * 60 * 1000,
+//     });
+  
+//     sendToken(newUser, 200, res);
+  
+  //   const html = `
+  //   <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: auto; border: 1px solid #ddd; border-radius: 10px; overflow: hidden;">
+  //     <div style="background-color: #007bff; color: white; padding: 20px; text-align: center;">
+  //       <h1 style="margin: 0; font-size: 24px;">Welcome to OJ Hospital</h1>
+  //     </div>
+  //     <div style="padding: 20px;">
+  //       <p>Dear <strong>${newUser.first_name} ${newUser.last_name}</strong>,</p>
+  //       <p>Thank you for choosing OJ Hospital. We're excited to have you onboard!</p>
+  //       <p>To complete your registration, please verify your account using the token below:</p>
+  //       <div style="text-align: center; margin: 20px 0;">
+  //         <div style="display: inline-block; padding: 10px 20px; font-size: 20px; font-weight: bold; color: #007bff; border: 2px dashed #007bff; border-radius: 5px;">
+  //           ${verificationToken}
+  //         </div>
+  //       </div>
+  //       <p><strong>Note:</strong> This token is valid for 24 hours only. Make sure to complete your verification promptly to enjoy uninterrupted access to our services.</p>
+  //       <p>If you did not sign up for this account, please ignore this email or contact our support team.</p>
+  //       <p style="margin-top: 20px;">Best regards,</p>
+  //       <p style="margin: 0;">The <strong>OJ Hospital</strong> Team</p>
+  //     </div>
+  //     <div style="background-color: #f8f9fa; color: #666; padding: 10px; text-align: center; font-size: 12px;">
+  //       <p style="margin: 0;">OJ Hospital | Your Health, Our Priority</p>
+  //       <p style="margin: 0;">123 Health Street, City, Country</p>
+  //       <p style="margin: 0;">Phone: +123-456-7890 | Email: <a href="mailto:support@ojhospital.com" style="color: #007bff; text-decoration: none;">support@ojhospital.com</a></p>
+  //     </div>
+  //   </div>
+  // `;
+  
+//     try {
+//       await sendEmail({
+//         email: newUser.email,
+//         subject: 'OJ Hospital Verification',
+//         html,
+//       });
+//     } catch (error) {
+//       console.log('Email failed to send:', error);
+//     }
+//   });
+
 exports.signup = catchAsyncErrors(async (req, res, next) => {
-    const {
-      first_name, last_name, email, gender, dob, password, confirmPassword, role,
-      phone, departments, address, school, NHIS, genotype, btype
-    } = req.body;
-  
-    if (password !== confirmPassword) {
-      return res.status(400).json({ message: 'Passwords do not match' });
-    }
-  
-    // Variable to store photo URL
-    let photoUrl = null;
-  
-    if (req.file) {
-      try {
-        // If file exists, upload to Cloudinary
-        const photoResult = await cloudinary.uploader.upload(
-          `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`
-        );
-        photoUrl = photoResult.secure_url;
-      } catch (uploadError) {
-        console.error('Image upload error', uploadError);
-        return res.status(500).json({ message: 'Image upload failed', error: uploadError.message });
-      }
-    } else {
-      // Assign a default photo URL if needed (or leave it null)
-      photoUrl = ""; // Replace with your default photo URL
-    }
-  
-    const hashedPassword = await bcrypt.hash(password, 12);
-    const verificationToken = Math.floor(100000 + Math.random() * 900000).toString();
-  
-    const newUser = await User.create({
-      first_name, last_name, email, gender, password: hashedPassword, dob, role, phone,
-      departments, address, school, NHIS, genotype, btype,
-      photo: photoUrl,
-      verificationToken,
-      verificationExpire: Date.now() + 24 * 60 * 60 * 1000,
-    });
-  
-    sendToken(newUser, 200, res);
-  
-    const html = `
-    <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: auto; border: 1px solid #ddd; border-radius: 10px; overflow: hidden;">
-      <div style="background-color: #007bff; color: white; padding: 20px; text-align: center;">
-        <h1 style="margin: 0; font-size: 24px;">Welcome to OJ Hospital</h1>
-      </div>
-      <div style="padding: 20px;">
-        <p>Dear <strong>${newUser.first_name} ${newUser.last_name}</strong>,</p>
-        <p>Thank you for choosing OJ Hospital. We're excited to have you onboard!</p>
-        <p>To complete your registration, please verify your account using the token below:</p>
-        <div style="text-align: center; margin: 20px 0;">
-          <div style="display: inline-block; padding: 10px 20px; font-size: 20px; font-weight: bold; color: #007bff; border: 2px dashed #007bff; border-radius: 5px;">
-            ${verificationToken}
-          </div>
-        </div>
-        <p><strong>Note:</strong> This token is valid for 24 hours only. Make sure to complete your verification promptly to enjoy uninterrupted access to our services.</p>
-        <p>If you did not sign up for this account, please ignore this email or contact our support team.</p>
-        <p style="margin-top: 20px;">Best regards,</p>
-        <p style="margin: 0;">The <strong>OJ Hospital</strong> Team</p>
-      </div>
-      <div style="background-color: #f8f9fa; color: #666; padding: 10px; text-align: center; font-size: 12px;">
-        <p style="margin: 0;">OJ Hospital | Your Health, Our Priority</p>
-        <p style="margin: 0;">123 Health Street, City, Country</p>
-        <p style="margin: 0;">Phone: +123-456-7890 | Email: <a href="mailto:support@ojhospital.com" style="color: #007bff; text-decoration: none;">support@ojhospital.com</a></p>
-      </div>
-    </div>
-  `;
-  
+  const {
+    first_name, last_name, email, gender, dob, password, confirmPassword, role,
+    phone, departments, address, school, NHIS, genotype, btype,
+  } = req.body;
+
+  if (password !== confirmPassword) {
+    return res.status(400).json({ message: 'Passwords do not match' });
+  }
+
+  const existingUser = await User.findOne({ email });
+  if (existingUser) {
+    return res.status(400).json({ message: 'Email is already registered' });
+  }
+
+  const hashedPassword = await bcrypt.hash(password, 12);
+  const verificationToken = Math.floor(100000 + Math.random() * 900000).toString();
+
+  let photoUrl = null;
+  if (req.file) {
     try {
-      await sendEmail({
-        email: newUser.email,
-        subject: 'OJ Hospital Verification',
-        html,
-      });
+      const photoResult = await cloudinary.uploader.upload(
+        `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`
+      );
+      photoUrl = photoResult.secure_url;
     } catch (error) {
-      console.log('Email failed to send:', error);
+      return res.status(500).json({ message: 'Image upload failed', error: error.message });
     }
+  }
+
+  // Save the unverified user to the database
+  const newUser = await User.create({
+    first_name,
+    last_name,
+    email,
+    gender,
+    dob,
+    phone,
+    departments,
+    address,
+    school,
+    NHIS,
+    genotype,
+    btype,
+    password: hashedPassword,
+    photo: photoUrl,
+    verificationToken,
+    verificationExpire: Date.now() + 24 * 60 * 60 * 1000, // Token valid for 24 hours
+    verified: false, // Mark as unverified
+    role,
   });
-  
+
+  const html = `
+  <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: auto; border: 1px solid #ddd; border-radius: 10px; overflow: hidden;">
+    <div style="background-color: #007bff; color: white; padding: 20px; text-align: center;">
+      <h1 style="margin: 0; font-size: 24px;">Welcome to OJ Hospital</h1>
+    </div>
+    <div style="padding: 20px;">
+      <p>Dear <strong>${newUser.first_name} ${newUser.last_name}</strong>,</p>
+      <p>Thank you for choosing OJ Hospital. We're excited to have you onboard!</p>
+      <p>To complete your registration, please verify your account using the token below:</p>
+      <div style="text-align: center; margin: 20px 0;">
+        <div style="display: inline-block; padding: 10px 20px; font-size: 20px; font-weight: bold; color: #007bff; border: 2px dashed #007bff; border-radius: 5px;">
+          ${verificationToken}
+        </div>
+      </div>
+      <p><strong>Note:</strong> This token is valid for 24 hours only. Make sure to complete your verification promptly to enjoy uninterrupted access to our services.</p>
+      <p>If you did not sign up for this account, please ignore this email or contact our support team.</p>
+      <p style="margin-top: 20px;">Best regards,</p>
+      <p style="margin: 0;">The <strong>OJ Hospital</strong> Team</p>
+    </div>
+    <div style="background-color: #f8f9fa; color: #666; padding: 10px; text-align: center; font-size: 12px;">
+      <p style="margin: 0;">OJ Hospital | Your Health, Our Priority</p>
+      <p style="margin: 0;">123 Health Street, City, Country</p>
+      <p style="margin: 0;">Phone: +123-456-7890 | Email: <a href="mailto:support@ojhospital.com" style="color: #007bff; text-decoration: none;">support@ojhospital.com</a></p>
+    </div>
+  </div>
+`;
+
+  try {
+    await sendEmail({
+      email: newUser.email,
+      subject: 'Verify Your Account',
+      html,
+    });
+    res.status(200).json({ message: 'Verification email sent' });
+  } catch (error) {
+    return res.status(500).json({ message: 'Failed to send email', error: error.message });
+  }
+});
+
+exports.verifyToken = catchAsyncErrors(async (req, res, next) => {
+  const { email, token } = req.body;
+
+  const user = await User.findOne({ email, verificationToken: token });
+
+  if (!user) {
+    return res.status(400).json({ message: 'Invalid or expired verification token' });
+  }
+
+  if (Date.now() > user.verificationExpire) {
+    return res.status(400).json({ message: 'Verification token expired' });
+  }
+
+  user.verified = true;
+  user.verificationToken = undefined; // Clear the token
+  user.verificationExpire = undefined;
+  await user.save();
+
+  // Generate and send a JWT for login
+  sendToken(user, 200, res);
+});
+
   
 
 exports.login = catchAsyncErrors(async (req, res, next) => {
@@ -118,12 +231,7 @@ exports.login = catchAsyncErrors(async (req, res, next) => {
 
 
 exports.logout = catchAsyncErrors(async (req, res, next) => {
-    // Clear the token from cookies
-    res.cookie("token", "", {
-        expires: new Date(Date.now()), // Set an expired date
-        httpOnly: true, // Ensure it's an HTTP-only cookie
-        secure: process.env.NODE_ENV === 'production' // Set secure flag if in production
-    });
+  
     // Send success response
     res.status(200).json({
         status: "success",

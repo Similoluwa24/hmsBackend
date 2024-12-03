@@ -53,6 +53,11 @@ const userSchema = new mongoose.Schema({
     address:{
         type:String
     },
+    verified:{
+        type:String,
+        required:true,
+        default: false
+    },
     school:{
         type:String
     },

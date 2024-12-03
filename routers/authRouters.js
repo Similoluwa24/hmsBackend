@@ -21,5 +21,6 @@ router.put("/admin/update/:id",isAuthenticated,uploads.single('photo'),isAdmin, 
 router.delete('/delete/:id',authController.deleteUser)
 router.get('/api/v1/test-auth', isAuthenticated, authController.checkMiddleware);
 router.get('/latest', authController.getLatest)
+router.post('/verify-token', authController.verifyToken)
 
 module.exports = router
