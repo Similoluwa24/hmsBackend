@@ -52,4 +52,33 @@ exports.addVitals = catchAsyncErrors(async (req, res) => {
       data: vitals,
     });
   });
+
+;
+
+// Get Vitals by User ID
+exports.getVitalsByUserId = catchAsyncErrors(async (req, res, next) => {
+  const userId = req.user.id; // Ensure `req.user.id` is populated by your authentication middleware
+
+  if (!userId) {
+    return res.status(400).json({
+      status: 'fail',
+      message: 'User ID is required',
+    });
+  }
+
+  const vitals = await Vitals.find({ user: userId });
+
+  if (!vitals || vitals.length === 0) {
+    return res.status(404).json({
+      status: 'fail',
+      message: 'No vitals found for this user',
+    });
+  }
+
+  res.status(200).json({
+    status: 'success',
+    data: vitals,
+  });
+});
+
   
