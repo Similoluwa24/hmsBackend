@@ -39,9 +39,12 @@ exports.addVitals = catchAsyncErrors(async (req, res) => {
   })
 
   exports.getByUserId = catchAsyncErrors(async (req, res, next) => {
-  
+  const userId = req.user.id
+  if (!userId) {
+    res.status(400).json('User doesnt exist')
+  }
     // Fetch all vitals for the user
-    const vitals = await Vitals.find({ user: req.user.id }).populate('user')
+    const vitals = await Vitals.find({ user:userId}).populate('user')
   
     // Return a structured response
     res.status(200).json({
