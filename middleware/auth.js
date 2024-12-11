@@ -15,10 +15,7 @@ exports.isAuthenticated = catchAsyncErrors(async (req, res, next) => {
     try {
         decoded = jwt.verify(token, process.env.JWT_SECRETKEY);
     } catch (error) {
-        if (error.name === 'TokenExpiredError') {
-            return next(new ErrorHandler('Token has expired. Please log in again.', 403));
-        }
-        return next(new ErrorHandler('Invalid token', 403));
+        return next(new ErrorHandler('Invalid or expired token', 403));
     }
 
     const user = await User.findById(decoded.id).select("-password");
@@ -29,7 +26,6 @@ exports.isAuthenticated = catchAsyncErrors(async (req, res, next) => {
     req.user = user;
     next();
 });
-
 
 
 exports.isAdmin = catchAsyncErrors(async (req, res, next) => {
