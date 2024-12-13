@@ -28,9 +28,9 @@ exports.signup = catchAsyncErrors(async (req, res, next) => {
   const hashedPassword = await bcrypt.hash(password, 12);
 
   // Generate Role-Based Unique ID
-  const rolePrefix = role === 'patient' ? 'PAT' : role === 'doctor' ? 'DOC' : 'ADM';
-  const randomDigits = Math.floor(100000 + Math.random() * 900000); // Random 6-digit number
-  const uniqueId = `${rolePrefix}${randomDigits}`;
+  const rolePrefix = role === 'admin' ? 'ADM' : role === 'doctor' ? 'DOC' : 'PAT';
+  const randomDigits = Math.floor(100000 + Math.random() * 900000);
+  const uniqueId = `OJH/${rolePrefix}/${randomDigits}`;
 
   const verificationToken = Math.floor(100000 + Math.random() * 900000).toString();
 
