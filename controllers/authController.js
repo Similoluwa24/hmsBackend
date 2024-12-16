@@ -415,9 +415,12 @@ exports.getLatest = catchAsyncErrors(async (req,res,next) => {
 
 exports.getPatientByCardNumber = catchAsyncErrors(async (req, res, next) => {
   const { uniqueId } = req.params;
- console.log("uniqueId", uniqueId);
- 
-  const patient = await User.findOne({uniqueId: uniqueId });
+const decodedUniqueId = decodeURIComponent(uniqueId);
+
+console.log('Decoded uniqueId:', decodedUniqueId);
+
+const patient = await User.findOne({ uniqueId: decodedUniqueId });
+
   if (!patient) {
       return next(new ErrorHandler('Patient not found.', 404));
   }
