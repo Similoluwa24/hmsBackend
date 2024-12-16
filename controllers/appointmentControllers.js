@@ -159,3 +159,20 @@ exports.getLatestAppointment = catchAsyncErrors(async (req,res,next) => {
     res.status(200).json(appointment)
 })
 
+// Fetch all appointments for a specific patient
+exports.getAppointmentsByPatientId = catchAsyncErrors(async (req, res, next) => {
+  const { user } = req.params;
+
+  const appointments = await Appointment.find({ user }).sort({ date: 1 });
+
+  if (!appointments || appointments.length === 0) {
+      return next(new ErrorHandler('No appointments found for this patient.', 404));
+  }
+
+  res.status(200).json({
+      success: true,
+      appointments,
+  });
+});
+
+

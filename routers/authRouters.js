@@ -22,5 +22,6 @@ router.delete('/delete/:id',authController.deleteUser)
 router.get('/api/v1/test-auth', isAuthenticated, authController.checkMiddleware);
 router.get('/latest', authController.getLatest)
 router.post('/verify-token', authController.verifyToken)
+router.get('/details/:uniqueId', isAuthenticated, authController.getPatientByCardNumber);
 
 module.exports = router

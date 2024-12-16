@@ -34,9 +34,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    uniqueId: {
-        type: String,
-        required: true
+    uniqueId:  {
+         type: String,
+         unique: true,
+         required: true
     },
     confirmPassword: {
         type: String,

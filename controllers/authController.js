@@ -1,4 +1,5 @@
 const User = require('../models/user');
+const Appointment = require('../models/appointment')
 const catchAsyncErrors = require('../middleware/catchAsyncErrors')
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto')
@@ -77,7 +78,7 @@ exports.signup = catchAsyncErrors(async (req, res, next) => {
     <div style="padding: 20px;">
       <p>Dear <strong>${newUser.first_name} ${newUser.last_name}</strong>,</p>
       <p>Thank you for choosing OJ Hospital. We're excited to have you onboard!</p>
-      <p>Your unique ID is: <strong>${uniqueId}</strong></p>
+      <p>Your Card Number is: <strong>${uniqueId}</strong></p>
       <p>To complete your registration, please verify your account using the token below:</p>
       <div style="text-align: center; margin: 20px 0;">
         <div style="display: inline-block; padding: 10px 20px; font-size: 20px; font-weight: bold; color: #007bff; border: 2px dashed #007bff; border-radius: 5px;">
@@ -124,7 +125,7 @@ exports.verifyToken = catchAsyncErrors(async (req, res, next) => {
   }
 
   user.verified = true;
-  user.verificationToken = undefined; // Clear the token
+  user.verificationToken = undefined; 
   user.verificationExpire = undefined;
   await user.save();
 
@@ -341,7 +342,7 @@ exports.getAllUsers = catchAsyncErrors( async(req, res)=>{
 })
 
 exports.getUserbyId = catchAsyncErrors( async(req, res)=>{
-       const users = await User.findById(req.params.id)
+       const users = await User.find(req.params.id)
 
        if (!users) {
         return next(new ErrorHandler('User not found', 404))
@@ -411,3 +412,23 @@ exports.getLatest = catchAsyncErrors(async (req,res,next) => {
     const user = await User.findOne().sort({createdAt: -1})
     res.status(200).json(user)
 })
+
+exports.getPatientByCardNumber = catchAsyncErrors(async (req, res, next) => {
+  const { uniqueId } = req.params;
+
+  const patient = await User.findOne({ uniqueId });
+  if (!patient) {
+      return next(new ErrorHandler('Patient not found.', 404));
+  }
+
+  // Check if there's an appointment for the patient (optional)
+  const appointment = await Appointment.findOne({ user: patient._id })
+      .sort({ date: -1 }) // Get the most recent appointment
+      .exec();
+
+  res.status(200).json({
+      success: true,
+      patient,
+      appointment: appointment || null, // Null if no appointment exists
+  });
+});
