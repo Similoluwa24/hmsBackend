@@ -7,44 +7,46 @@ const sendEmail = require("../utils/sendEmail");
 
 
 
-exports.createAppointment = catchAsyncErrors(async (req,res) => {
-  // Ensure the user is authenticated and their id is available
-  req.body.user = req.user.id;
-
-  const { first_name, last_name, email, doctor, date, time, message } = req.body;
+exports.createAppointment = catchAsyncErrors(async (req, res) => {
+  const { user, first_name, last_name, email, doctor, date, time, message } = req.body;
 
   // Validate if all required fields are present in the request body
-  if (!first_name || !last_name || !email || !doctor || !date || !time || !message) {
-      return res.status(400).json({ message: 'Please provide all required fields: first_name, last_name, email, doctor, date, time, message.' });
+  if (!user || !first_name || !last_name || !email || !doctor || !date || !time || !message) {
+    return res.status(400).json({ message: 'Please provide all required fields: user, first_name, last_name, email, doctor, date, time, message.' });
+  }
+
+  // Check if the user (patient) exists in the User collection
+  const patient = await User.findOne(user);
+  if (!patient) {
+    return res.status(400).json({ message: 'Patient not found' });
   }
 
   // Check if the doctor exists in the User collection
   const doctorExists = await User.findById(doctor);
   if (!doctorExists) {
-      return res.status(400).json({ message: 'Doctor not found' });
+    return res.status(400).json({ message: 'Doctor not found' });
   }
 
   // Create a new appointment using the provided data
   const appointment = await Appointment.create({
-      user: req.user.id, // User is automatically assigned from the authenticated user
-      first_name,
-      last_name,
-      email,
-      doctor,
-      date,
-      time,
-      message
+    user, // Assign the appointment to the correct patient
+    first_name,
+    last_name,
+    email,
+    doctor,
+    date,
+    time,
+    message,
   });
 
   // Send response with the created appointment
   res.status(201).json({
-      status: "success",
-      appointment
+    status: 'success',
+    appointment,
   });
 
   try {
     const doctorName = `${doctorExists.first_name} ${doctorExists.last_name}`;
-    
     const emailContent = `
       <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: auto; border: 1px solid #ddd; border-radius: 10px; overflow: hidden;">
         <div style="background-color: #007bff; color: white; padding: 20px; text-align: center;">
@@ -71,14 +73,15 @@ exports.createAppointment = catchAsyncErrors(async (req,res) => {
     `;
 
     await sendEmail({
-      email: email, 
+      email: email,
       subject: 'Appointment Confirmation - OJ Hospital',
-      html: emailContent, 
+      html: emailContent,
     });
   } catch (error) {
     console.error('Failed to send appointment confirmation email:', error);
   }
 });
+
 exports.deleteAppointment = catchAsyncErrors(async (req, res, next) => {
     const deleteApp = await Appointment.findById(req.params.id)
     if (!deleteApp) {
