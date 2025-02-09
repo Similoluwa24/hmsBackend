@@ -1,34 +1,40 @@
 const mongoose = require('mongoose');
 
 const pharmacySchema = new mongoose.Schema({
-    name:{
-        type:String,
-        required:[true,'name is required']
+    patients: {
+        type: mongoose.Schema.ObjectId,
+        ref: 'User', 
+        required: [true, 'Patient is required']
     },
-    category:{
-        type:String,
-        required:[true,'category is required']
+    doctor: {
+        type: mongoose.Schema.ObjectId,
+        ref: 'User', 
+        required: [true, 'Doctor is required']
     },
-    cName:{
-        type:String,
-        required:[true,'cName is required']
+    drugs: [
+        {
+            name: { type: String, required: [true, 'Drug name is required'] },
+            quantity: { type: Number, required: [true, 'Quantity is required'] },
+            dosage: { type: String, required: [true, 'Dosage instructions are required'] }
+        }
+    ],
+    dateDispensed: {
+        type: Date,
+        default: Date.now,
+        required: true
     },
-    pDate:{
-        type:String,
-        required:[true,'pDate is required']
+    linkedAppointment: {
+        type: mongoose.Schema.ObjectId,
+        ref: 'Appointment', 
     },
-    price:{
-        type:Number,
-        required:[true,'price is required']
+    linkedDiagnosis: {
+        type: mongoose.Schema.ObjectId,
+        ref: 'Diagnosis', 
     },
-    eDate:{
-        type:String,
-        required:[true,'eDate is required']
-    },
-    stock:{
-        type:Number,
-        required:[true,'stock is required']
+    notes: {
+        type: String, 
+        minlength: [3, 'Notes should be at least 3 characters']
     }
-})
+});
 
-module.exports = mongoose.model('Pharmacy', pharmacySchema)
+module.exports = mongoose.model('Pharmacy', pharmacySchema);

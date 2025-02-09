@@ -342,14 +342,13 @@ exports.getAllUsers = catchAsyncErrors( async(req, res)=>{
 })
 
 exports.getUserbyId = catchAsyncErrors( async(req, res)=>{
-       const users = await User.find(req.params.id)
+       const users = await User.findById(req.params.id)
 
        if (!users) {
         return next(new ErrorHandler('User not found', 404))
        }
        res.status(200).json({
         status:"success",
-        count: users.length,
         users
        })
 })

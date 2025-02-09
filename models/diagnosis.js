@@ -20,10 +20,6 @@ const diagnosisSchema = new mongoose.Schema({
         type:String,
         required:true
     },
-    // medication:{
-    //     type:String,
-    //     required:true
-    // },
     
     notes:{
         type:String,

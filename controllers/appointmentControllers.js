@@ -16,7 +16,7 @@ exports.createAppointment = catchAsyncErrors(async (req, res) => {
   }
 
   // Check if the user (patient) exists in the User collection
-  const patient = await User.findOne(user);
+  const patient = await User.findById(user);
   if (!patient) {
     return res.status(400).json({ message: 'Patient not found' });
   }
@@ -147,7 +147,7 @@ exports.getAppointmentsByDoctor = catchAsyncErrors(async (req, res) => {
   
 
     const appointments = await Appointment.find({ doctor: req.user.id })
-        .populate('user', 'first_name last_name email') 
+        .populate('user', 'first_name last_name email uniqueId') 
         .populate('doctor', 'first_name last_name email'); 
 
     if (!appointments || appointments.length === 0) {
